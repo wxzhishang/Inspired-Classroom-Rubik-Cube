@@ -12,9 +12,11 @@
     "prettier": "prettier --check src/**/*.{ts,tsx} --write"
   },
   "dependencies": {
+    "antd": "^5.23.0",
     "pont-engine": "^1.6.3",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react-dom": "^19.0.0",
+    "zustand": "^5.0.3"
   },
   "devDependencies": {
     "@eslint/js": "^9.17.0",
