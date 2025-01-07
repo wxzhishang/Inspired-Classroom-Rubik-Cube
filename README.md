@@ -1,2 +1,29 @@
-# Inspired-Classroom-Rubik-Cube
-灵感课堂魔方——AI教师备课系统
+# Rsbuild Project
+
+## Setup
+
+Install the dependencies:
+
+```bash
+pnpm install
+```
+
+## Get Started
+
+Start the dev server:
+
+```bash
+pnpm dev
+```
+
+Build the app for production:
+
+```bash
+pnpm build
+```
+
+Preview the production build locally:
+
+```bash
+pnpm preview
+```
