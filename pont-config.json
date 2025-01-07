@@ -1,0 +1,18 @@
+{
+  "templatePath": "./pontTemplate",
+  "outDir": "./src/api",
+  "usingMultipleOrigins": true,
+  "mocks": {
+    "enable": true,
+    "wrapper": "{\"code\": 20000, \"success\": true, \"data\": {response}, \"message\": \"\"}",
+    "containDataSources": ["dlap"]
+  },
+  "templateType": "fetch",
+  "origins": [
+    {
+      "name": "base",
+      "originType": "SwaggerV3",
+      "originUrl": ""
+    }
+  ]
+}
