@@ -17,7 +17,10 @@
     /* type checking */
     "strict": true,
     "noUnusedLocals": true,
-    "noUnusedParameters": true
+    "noUnusedParameters": true,
+
+    "typeRoots": ["./node_modules/@types/", "./typings.d.ts"],
   },
-  "include": ["src"]
+  "include": ["./src/api/api.d.ts", "./src/**/*", "typings.d.ts"],
+  "exclude": ["./mock/*"]
 }

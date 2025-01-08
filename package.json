@@ -13,9 +13,11 @@
   },
   "dependencies": {
     "antd": "^5.23.0",
+    "axios": "^1.7.9",
     "pont-engine": "^1.6.3",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "react-router-dom": "^7.1.1",
     "zustand": "^5.0.3"
   },
   "devDependencies": {

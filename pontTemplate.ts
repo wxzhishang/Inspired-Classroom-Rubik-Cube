@@ -180,12 +180,12 @@ export default class MyGenerator extends CodeGenerator {
       */
       import serverConfig, { checkResult } from '@/utils/server.config';
       import { initRequest } from '@/common';
+      import axios from "axios"
 
       const backEndUrl = serverConfig()['${this.dataSource.name}'];
 
       export async function fetch(${requestParams}) {
-        const request = await initRequest();
-        const result = await request.${requestObj.method}(backEndUrl + \`${path}\`, {
+        const result = await axios.${requestObj.method}(backEndUrl + \`${path}\`, {
           headers: {
             'Content-Type': '${requestObj.contentType}',
           },
