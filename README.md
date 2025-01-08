@@ -97,3 +97,20 @@ const {
    --》 页面，命名要求小驼峰，一个页面一个文件夹，内部包含components(页面内部组件)和index.tsx以及index.moudle.less
 5. ./styles --》 除app.css外全局样式
 6. ./utils --》 工具函数封装
+
+## 代码头部注释
+
+1. vscode下载koroFileHeader插件
+2. 在setting.json中修改配置（vscode设置）
+3. 配置头部注释，示例如下：
+```json
+"fileheader.customMade": {
+    // 此为头部注释
+    "文件描述": "", // 文件描述
+    "作者": "luxiaolong", // 文件作者
+    "Date": "Do not edit", // 文件创建时间
+    "LastEditors": "luxiaolong", // 最后编辑文件的人
+    "LastEditTime": "Do not edit" // 文件最后编辑时间
+  },
+```
+4. 其余配置可自己配置，参考网上教程
