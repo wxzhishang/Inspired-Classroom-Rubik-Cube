@@ -1,11 +1,18 @@
+import { BrowserRouter as Router, Routes as Switch, Route } from 'react-router-dom'
 import './App.css'
+import Routes from './router/router'
 
 const App = () => {
   return (
-    <div className="content">
-      <h1>Rsbuild</h1>
-      <p>Start building amazing things with Rsbuild.</p>
-    </div>
+    <Router>
+      <div>
+        <Switch>
+          {Routes.map((route) => (
+            <Route key={route.path} path={route.path} element={route.element} />
+          ))}
+        </Switch>
+      </div>
+    </Router>
   )
 }
 
