@@ -1,0 +1,20 @@
+.register-main {
+    height: 100%;
+    min-height: 100vh;
+    overflow: hidden;
+    background: url('../../assets/logbg.jpg') no-repeat center center fixed;
+    background-size: cover;
+}
+
+.register-form {
+    padding: 2rem;
+    background: rgba(255, 255, 255, 0.3);
+    backdrop-filter: blur(10px);
+    border-radius: 10px;
+    width: 40%;
+    max-width: 600px;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin-left: 100px;
+    margin-top: 150px;
+}
