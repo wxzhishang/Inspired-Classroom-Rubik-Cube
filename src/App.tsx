@@ -1,12 +1,10 @@
+import {Routes} from './router/router'
 import './App.css'
+import {useRoutes} from 'react-router-dom'
 
-const App = () => {
-  return (
-    <div className="content">
-      <h1>Rsbuild</h1>
-      <p>Start building amazing things with Rsbuild.</p>
-    </div>
-  )
+function App() {
+  const element = useRoutes(Routes)
+  return <>{element}</>
 }
 
 export default App
