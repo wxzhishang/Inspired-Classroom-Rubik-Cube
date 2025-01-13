@@ -1,22 +1,22 @@
-import { CodeGenerator, Interface, Property } from 'pont-engine';
+import { CodeGenerator, Interface, Property } from 'pont-engine'
 
 export default class MyGenerator extends CodeGenerator {
-  enum: Array<string | number> = [];
+  enum: Array<string | number> = []
 
   setEnum(enums: Array<string | number> = []) {
-    this.enum = enums.map(value => {
+    this.enum = enums.map((value) => {
       if (typeof value === 'string') {
         if (!value.startsWith("'")) {
-          value = `'${value}`;
+          value = `'${value}`
         }
 
         if (!value.endsWith("'")) {
-          value = `${value}'`;
+          value = `${value}'`
         }
       }
 
-      return value;
-    });
+      return value
+    })
   }
 
   /** 获取总的类型定义代码 */
@@ -39,93 +39,95 @@ export default class MyGenerator extends CodeGenerator {
       ${this.getBaseClassesInDeclaration()}
 
       ${this.getModsDeclaration()}
-    `;
+    `
   }
 
   /** 获取所有基类文件代码 */
   getBaseClassesIndex() {
     const clsCodes = this.dataSource.baseClasses.map(
-      base => `
+      (base) => `
       class ${base.name} {
         ${base.properties
-          .map(prop => {
-            return this.toPropertyCodeWithInitValue(prop, base.name);
+          .map((prop) => {
+            return this.toPropertyCodeWithInitValue(prop, base.name)
           })
-          .filter(id => id)
+          .filter((id) => id)
           .join('\n')}
       }
     `,
-    );
+    )
 
     if (this.dataSource.name) {
       return `
       ${clsCodes.join('\n')}
       export const ${this.dataSource.name} = {
-        ${this.dataSource.baseClasses.map(bs => bs.name).join(',\n')}
+        ${this.dataSource.baseClasses.map((bs) => bs.name).join(',\n')}
       }
-    `;
+    `
     }
 
-    return clsCodes.map(cls => `export ${cls}`).join('\n');
+    return clsCodes.map((cls) => `export ${cls}`).join('\n')
   }
 
   toPropertyCodeWithInitValue(prop: Property, baseName = '') {
-    this.setEnum(prop.dataType.enum);
-    const { typeName, isDefsType } = prop.dataType;
-    let typeWithValue = `= ${this.getInitialValue(typeName, isDefsType, false)}`;
+    this.setEnum(prop.dataType.enum)
+    const { typeName, isDefsType } = prop.dataType
+    let typeWithValue = `= ${this.getInitialValue(typeName, isDefsType, false)}`
 
     if (prop.dataType.typeName === baseName) {
-      typeWithValue = `= {}`;
+      typeWithValue = `= {}`
     }
 
-    let propName = prop.name;
+    let propName = prop.name
     if (!propName.match(/^[a-zA-Z_$][a-zA-Z0-9_$]*$/)) {
-      propName = `'${propName}'`;
+      propName = `'${propName}'`
     }
 
     return `
     /** ${prop.description || prop.name} */
     ${propName} ${typeWithValue}
-    `;
+    `
   }
 
   initClassValue(isDefsType: boolean, usingDef: boolean, typeName: string) {
-    const originName = this.dataSource.name;
+    const originName = this.dataSource.name
     if (!usingDef) {
-      return `new ${typeName}()`;
+      return `new ${typeName}()`
     }
-    return `new ${this.getDefName(originName, typeName, isDefsType)}()`;
+    return `new ${this.getDefName(originName, typeName, isDefsType)}()`
   }
 
   initEnumValue() {
-    const str = this.enum[0];
+    const str = this.enum[0]
     if (typeof str === 'string') {
-      return `${str}`;
+      return `${str}`
     }
-    return `${str}`;
+    return `${str}`
   }
 
   getInitialValue(typeName: string, isDefsType: boolean, usingDef = true) {
     if (isDefsType) {
-      return this.initClassValue(isDefsType, usingDef, typeName);
+      return this.initClassValue(isDefsType, usingDef, typeName)
     }
     if (this.enum && this.enum.length) {
-      return this.initEnumValue();
+      return this.initEnumValue()
     }
-    return this.initNormalTypeValue(typeName);
+    return this.initNormalTypeValue(typeName)
   }
 
   /** 生成的api.d.ts文件中的对应每个接口的内容 */
   getInterfaceContentInDeclaration(inter: Interface) {
-    const paramsCode = inter.getParamsCode();
-    const bodyParamsCode = inter.getBodyParamsCode();
-    const hasGetParams = !!inter.parameters.filter(param => param.in !== 'body').length;
+    const paramsCode = inter.getParamsCode()
+    const bodyParamsCode = inter.getBodyParamsCode()
+    const hasGetParams = !!inter.parameters.filter(
+      (param) => param.in !== 'body',
+    ).length
     let requestParams = bodyParamsCode
       ? `bodyParams: ${bodyParamsCode}, params: Params`
-      : `params: Params`;
+      : `params: Params`
 
     if (!hasGetParams) {
-      requestParams = bodyParamsCode ? `bodyParams: ${bodyParamsCode}` : '';
+      requestParams = bodyParamsCode ? `bodyParams: ${bodyParamsCode}` : ''
     }
 
     return `
@@ -136,135 +138,139 @@ export default class MyGenerator extends CodeGenerator {
       export const init: Response;
 
       export function fetch(${requestParams}): Promise<Response>;
-    `;
+    `
   }
 
   /** 生成的接口请求部分 */
   // eslint-disable-next-line complexity
   getInterfaceContent(inter: Interface) {
     // type为body的参数
-    const bodyParamsCode = inter.getBodyParamsCode();
+    const bodyParamsCode = inter.getBodyParamsCode()
     // 判断是否有params参数
-    const hasGetParams = !!inter.parameters.filter(param => param.in !== 'body').length;
-    let requestParams = bodyParamsCode ? `data = {}, params = {}` : `params = {}`;
-    let requestStr = bodyParamsCode ? `data, params` : `params`;
+    const hasGetParams = !!inter.parameters.filter(
+      (param) => param.in !== 'body',
+    ).length
+    let requestParams = bodyParamsCode
+      ? `data = {}, params = {}`
+      : `params = {}`
+    let requestStr = bodyParamsCode ? `data, params` : `params`
     if (!hasGetParams) {
-      requestParams = bodyParamsCode ? `data = {}` : 'params = {}';
-      requestStr = bodyParamsCode ? `data` : 'params';
+      requestParams = bodyParamsCode ? `data = {}` : 'params = {}'
+      requestStr = bodyParamsCode ? `data` : 'params'
     }
-    const requestObj = this.getRequest(bodyParamsCode, inter.method);
+    const requestObj = this.getRequest(bodyParamsCode, inter.method)
 
     // const { typeName, isDefsType } = inter.response;
     // const initValue = this.getInitialValue(typeName, isDefsType);
 
-    let defsStr = '';
+    let defsStr = ''
     if (inter.response.isDefsType) {
-      defsStr = "import * as defs from '../../baseClass';";
+      defsStr = "import * as defs from '../../baseClass';"
     }
 
     // 处理这种情况： /api/v1/op/cluster/{id}
-    const path = inter.path.replace(/\{(.+?)\}/g, str => {
-      const column = str.substring(1, str.length - 1);
+    const path = inter.path.replace(/\{(.+?)\}/g, (str) => {
+      const column = str.substring(1, str.length - 1)
       // 示例：params['clusterUid'] ?? data['clusterUid']
       const expression = requestStr
         .split(',')
-        .map(objStr => `${objStr}['${column}']`)
+        .map((objStr) => `${objStr}['${column}']`)
         .reverse()
-        .join('??');
-      return `\${${expression}}`;
-    });
+        .join('??')
+      return `\${${expression}}`
+    })
 
     return `
       /**
-      * @description ${inter.description}
+        * @description ${inter.description}
       */
-      import serverConfig, { checkResult } from '@/utils/server.config';
+      import serverConfig from '@/utils/server.config';
       import { initRequest } from '@/common';
       import axios from "axios"
 
       const backEndUrl = serverConfig()['${this.dataSource.name}'];
 
       export async function fetch(${requestParams}) {
-        const result = await axios.${requestObj.method}(backEndUrl + \`${path}\`, {
+        const result = await axios.${requestObj.method}(backEndUrl + \`${path}\`,
+          ${requestStr},
+        {
           headers: {
             'Content-Type': '${requestObj.contentType}',
           },
-          ${requestStr},
-        });
+        }
+        );
         if (result) {
-          if (!checkResult(result))  {
-            throw new Error(JSON.stringify(result));
-          } else {
-            return result.data;
-          }
+          return result.data;
         } else {
           throw new Error(JSON.stringify({ message: '接口未响应' }));
         }
       }
-    `;
+    `
   }
 
   getDefName(originName: string, typeName: string, isDefsType: boolean) {
-    let name = typeName;
+    let name = typeName
 
     if (isDefsType) {
-      name = originName ? `defs.${originName}.${typeName}` : `defs.${typeName}`;
+      name = originName ? `defs.${originName}.${typeName}` : `defs.${typeName}`
     }
 
-    return name;
+    return name
   }
 
   initNormalTypeValue(typeName: string) {
     switch (typeName) {
       case 'Array':
-        return '[]';
+        return '[]'
 
       case 'boolean':
-        return 'false';
+        return 'false'
 
       case 'string':
-        return "''";
+        return "''"
 
       case 'number':
       default:
-        return 'undefined';
+        return 'undefined'
     }
   }
 
   // eslint-disable-next-line complexity
   getRequest(bodyParamsCode: string, method: string) {
     // 为避免method匹配不上，全部转化为大写
-    const upperMethod = method.toUpperCase();
+    const upperMethod = method.toUpperCase()
     const fetchMethod =
-      bodyParamsCode && ['PUT', 'POST'].includes(upperMethod) ? `${upperMethod}:JSON` : upperMethod;
+      bodyParamsCode && ['PUT', 'POST'].includes(upperMethod)
+        ? `${upperMethod}:JSON`
+        : upperMethod
 
-    let methodTemp = '';
-    let contentType = 'application/json';
+    let methodTemp = ''
+    let contentType = 'application/json'
     switch (fetchMethod) {
       case 'GET':
       default:
-        methodTemp = 'get';
-        break;
+        methodTemp = 'get'
+        break
       case 'PUT':
-        methodTemp = 'put';
-        break;
+        methodTemp = 'put'
+        break
       case 'DELETE':
-        methodTemp = 'delete';
-        break;
+        methodTemp = 'delete'
+        break
       case 'POST':
-        methodTemp = 'post';
-        contentType = 'application/x-www-form-urlencoded';
-        break;
+        methodTemp = 'post'
+        contentType = 'application/x-www-form-urlencoded'
+        break
       case 'PUT:JSON':
-        methodTemp = 'put';
-        break;
+        methodTemp = 'put'
+        break
       case 'POST:JSON':
-        methodTemp = 'post';
-        break;
+        methodTemp = 'post'
+        break
     }
     return {
       method: methodTemp,
       contentType,
-    };
+    }
   }
 }

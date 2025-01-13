@@ -12,9 +12,12 @@
     "prettier": "prettier --check src/**/*.{ts,tsx} --write"
   },
   "dependencies": {
+    "ahooks": "^3.8.4",
     "antd": "^5.23.0",
     "axios": "^1.7.9",
     "pont-engine": "^1.6.3",
+    "prettier": "^3.4.2",
+    "prettier-plugin-organize-imports": "^4.1.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.22.0",

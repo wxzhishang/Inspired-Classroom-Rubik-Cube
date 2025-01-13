@@ -1,0 +1,21 @@
+/**
+ * @description 注册账号
+ */
+import serverConfig from '@/utils/server.config';
+import { initRequest } from '@/common';
+import axios from 'axios';
+
+const backEndUrl = serverConfig()['base'];
+
+export async function fetch(data = {}, params = {}) {
+  const result = await axios.post(backEndUrl + `/user/regist`, data, params, {
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+  if (result) {
+    return result.data;
+  } else {
+    throw new Error(JSON.stringify({ message: '接口未响应' }));
+  }
+}
